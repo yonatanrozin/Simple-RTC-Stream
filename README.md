@@ -1,5 +1,5 @@
 # Simple-RTC-Stream
-A bare-minimum example of streaming data between 2 devices over WebRTC
+A bare-minimum example of streaming data between 2 devices over WebRTC. This example is geared towards using a mobile device as a hand-held controller, but it can be adapted for many other uses.
 
 ## About
 
@@ -43,7 +43,7 @@ Open the receiver device BEFORE connecting the sender!
 
 #### TouchDesigner receiver
 - Open ```RTC_in.toe``` in TouchDesigner
-    - TD will use localhost for the Web Render by default. If the server is hosted on a different device, replace "localhost" with the server IP address in the webrender1 "URL or File" parameter
+    - TD will use localhost for the Web Render by default. If the server is hosted on a different device, replace "localhost" with the server IP address in the ```webrender1``` "URL or File" parameter inside the ```RTCWrapper``` COMP
 
 ### Sender Device
 
@@ -59,10 +59,10 @@ Open the receiver device BEFORE connecting the sender!
 ### Disable internet dependency (currently untested!)
 - In both the sender and receiver scripts, you may uncomment ```peerConfiguration.iceServers = []``` to allow this entire network to run on a private LAN with no internet access. This may result in lower quality streams, so test carefully before using.
 
-### Media/Data stream options
+### Media stream options
 In ```sender/script.js```:
 - Inside ```document.querySelector("button").addEventListener("click" ...```
-    - Comment/uncomment stream functions to enable/disable streams as desired. Make sure at least one is uncommented!
+    - Comment/uncomment ```await startMediaStream()``` to enable or disable the media stream
 - Inside ```function startMediaStream()```:
     - Comment/uncomment audio and video objects inside ```constraints``` to enable/disable audio and video streams as desired.
         - If you want to disable BOTH video and audio streams, you should comment out ```await startMediaStream()``` instead.
@@ -70,12 +70,24 @@ In ```sender/script.js```:
     - Set ```facingMode: "environment"``` to use rear camera on mobile device. Default value "user" will use the front-facing webcam.
     - Experiment with the audio constraint settings ```echoCancellation```, ```noiseSuppression``` and ```autoGainControl```
         - Setting these to true or false may improve audio quality and prevent feedback.
-
+     
 Be aware of potential feedback if playing an audio stream through a speaker!
 
 Receiving an audio stream on a mobile device may cause autoplay issues. You may have to mute the video by default with ```video.muted = true``` and then unmute manually AFTER receiving the video stream with ```video.muted = true```. This solution hasn't been tested yet.
+     
+### Data source options
+- Inside ```document.querySelector("button").addEventListener("click" ...```
+    - Comment/uncomment start stream functions to enable or disable data sources as needed.
+- To increase or decrease float precision of a datapoint, adjust the 3rd argument to the corresponding call to ```setDatapoint(label, value, decimalPlaces)```
+    - default is 3 decimal places, set to 0 for int precision
+
+#### Adding more data sources
+To add additional data sources, such as from external APIs or interactive HTML elements (buttons, sliders, etc):
+- Call ```setDatapoint(label, value, decimalPlaces)``` from anywhere in the script, i.e. an event listener callback, HTTP response, etc.
+- It's up to you to handle these additional data sources as needed.
     
 ## Notes
-- Refreshing and re-connecting the sender after connecting to the receiver will cause the receiver to crash.
+- Refreshing and re-connecting the sender after connecting to the receiver will cause the receiver to crash. (fix hopefully coming soon)
     - If you need to refresh the sender, refresh the receiver before reconnecting the sender.
+        - On a TouchDesigner receiver, use the "reload source" button of ```webrender1``` inside the ```RTCWrapper``` COMP.
 - It's strongly recommended to enable your device's orientation lock, especially if using the gyroscope
