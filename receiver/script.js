@@ -1,4 +1,6 @@
 const isTD = new URLSearchParams(window.location.search).has("td");
+const isMax = new URLSearchParams(window.location.search).has("max");
+
 if (isTD) document.title = "{}";
 
 let peerConfiguration = {
@@ -62,7 +64,10 @@ peer.ondatachannel = ({ channel }) => {
 function onChannelDataReceived({data}) {
     try {
         Object.assign(RTCData, JSON.parse(data));
-        document.title = JSON.stringify(RTCData);
-        console.log(RTCData);
-    } catch {document.title = "{}";}
+        if (isTD) document.title = JSON.stringify(RTCData);
+        else if (isMax) {
+            window.max.setDict("RTCData", RTCData);
+            window.max.outlet("bang");
+        }
+    } catch {}
 }

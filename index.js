@@ -1,6 +1,7 @@
 import express from "express";
 import { Server } from "socket.io";
-import { createServer } from "https";
+import https from "https";
+import http from "http";
 import { createCA, createCert } from "mkcert";
 import os from "os";
 
@@ -21,11 +22,24 @@ const cert = await createCert({
 });
 
 const app = express();
+
 app.use("/sender", express.static("sender"));
 app.use("/receiver", express.static("receiver"));
 
-const server = createServer({cert: cert.cert, key: cert.key}, app);
-const io = new Server(server);
+const httpsServer = https.createServer({cert: cert.cert, key: cert.key}, app);
+const httpServer = http.createServer(app);
+
+const io = new Server({
+  cors: {
+    origin: ["http://localhost*", "https://localhost*"],
+    methods: ["GET", "POST"],
+    credentials: true
+  }
+});
+
+io.attach(httpServer);
+io.attach(httpsServer);
+
 io.on("connection", (ws) => {
   ws.on("offer", offer => {
       ws.broadcast.emit("offer", offer);
@@ -38,9 +52,9 @@ io.on("connection", (ws) => {
   });
 });
 
-server.listen(443, () => console.log(
-  `Open receiver client hosted at https://${ip}/receiver,
+httpServer.listen(80);
+httpsServer.listen(443, () => console.log(
+  `Open browser-based receiver client hosted at https://${ip}/receiver,
   THEN open sender client hosted at https://${ip}/sender.
-  If accessing data stream through a TouchDesigner Web Render, use https://${ip}/receiver?td.
   If either sender or receiver device is hosting this server, use ip address 127.0.0.1 in the URL instead.`
 ));

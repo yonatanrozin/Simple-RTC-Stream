@@ -50,6 +50,12 @@ Open the receiver device BEFORE connecting the sender!
 - Open ```RTC_in.toe``` in TouchDesigner
     - TD will use localhost for the Web Render by default. If the server is hosted on a different device, replace "localhost" with the server IP address in the ```webrender1``` "URL or File" parameter inside the ```RTCWrapper``` COMP
 
+#### Max/MSP receiver
+Max/MSP uses jweb~ to open an embedded web browser. Currently, the patch has only been tested when running on the same device as the server, but it may work on a separate device as well. If you decide to test on a separate device, replace "localhost" with the server device's local IP address in the jweb URL.
+- Open ```RTC_in.maxpat``` in Max/MSP
+    - Use outlets 1 + 2 to access the audio stream
+    - Add/remove data keys from ```dict.unpack``` as needed to get the values as usable max messages
+
 ### Sender Device
 
 - Open ```https://<server.ip.address>/sender``` on the sender device. 
