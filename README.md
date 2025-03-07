@@ -9,10 +9,12 @@ __This repo is in very early development and is subject to frequent updates and 
 
 ## Software Dependencies
 - Node.js & NPM
+- Web browsers (currently tested with Chrome on Windows 11, Chrome & Safari on iOS)
 - TouchDesigner (optional)
+- Max/MSP (optional)
 
 ## Hardware Dependencies
-- Sender & receiver devices with web browsers (currently tested with Chrome on Windows 11, Chrome & Safari on iOS)
+- Sender & receiver devices with web browsers 
     - Any device with a compatible web browser will work. Individual features and performance will depend on device hardware capabilities and browser compatibility
     - Limit 1 each of sender + receiver
 - Server device with Node.js installed. 
