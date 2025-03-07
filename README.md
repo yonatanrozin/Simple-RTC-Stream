@@ -1,5 +1,5 @@
 # Simple-RTC-Stream
-A bare-minimum example of streaming data between 2 devices over WebRTC. This example is geared towards using a mobile device as a hand-held controller, but it can be adapted for many other uses.
+A bare-minimum example of streaming data between 2 devices over WebRTC. This example is geared towards using a mobile device as a hand-held controller or embedded sensor, but it can be adapted for many other uses.
 
 ## About
 
