@@ -26,7 +26,12 @@ __This repo is in very early development and is subject to frequent updates and 
     - ```npm install```
 
 ## Run
-Ensure all devices are connected to the same WiFI/ethernet network
+- Ensure all devices (server, sender, receiver) are connected to the same WiFI/ethernet network
+- Launch server
+- Open receiver page
+- Open sender page
+
+See below for detailed instructions:
 
 ### Server Device
 - In server device command line, from repo folder:
