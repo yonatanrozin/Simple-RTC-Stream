@@ -55,9 +55,11 @@ Open the receiver device BEFORE connecting the sender!
 - Open ```https://<server.ip.address>/sender``` on the sender device. 
     - If the sender device is also hosting this server, use ```https://127.0.0.1/sender``` instead.
     - Tap anywhere on screen to enable the streams. Be sure to grant any camera, microphone or sensor permissions when requested.
-- Server uses self-signed certificates to serve interfaces over https, which is required for camera, microphone and sensor access. This will cause most browsers to display certificate security warnings when attempting to open the page for the first time after launching the server. These warnings can be ignored, since our own server is generating the certificate. Steps to proceed differ between browsers, but the process is usually similar to:
-    - View "advanced" or "more details"
-    - Select "accept risk" or "continue to website"
+ 
+### Note
+Server uses self-signed certificates to serve interfaces over https, which is required for camera, microphone and sensor access. This will cause most browsers to display certificate security warnings when attempting to open the sender or receiver pages for the first time after launching the server. These warnings can be ignored, since our own server is generating the certificates. Steps to proceed differ between browsers, but the process is usually similar to:
+- View "advanced" or "more details"
+- Select "accept risk" or "continue to website"
 
 ## Sender/Receiver Configuration
 
