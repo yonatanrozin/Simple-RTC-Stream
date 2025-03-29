@@ -5,6 +5,14 @@ import http from "http";
 import { createCA, createCert } from "mkcert";
 import os from "os";
 import { Client, Bundle } from "node-osc";
+const {argv, exit} = process;
+
+const PORT = Number(argv[2]);
+
+if (!PORT) {
+    console.log("Run 'node index <PORT> and specify a port number.'");
+    exit();
+}
 
 const ip = os.networkInterfaces()['Wi-Fi'].find(i => i.family === "IPv4").address;
 
@@ -29,7 +37,7 @@ app.use(express.static("./clients"));
 const httpsServer = https.createServer({ cert: cert.cert, key: cert.key }, app);
 const httpServer = http.createServer(app);
 
-const OSC = new Client("localhost", 10000);
+const OSC = new Client("192.168.1.130", 10000); //use ip address 127.0.0.1 to send to software on this same device
 
 function getOscAddresses(obj, prefix="") {
     const result = [];
@@ -73,8 +81,8 @@ io.on("connection", (ws) => {
     });
 });
 
-httpServer.listen(80);
-httpsServer.listen(443, () => {
+httpServer.listen(PORT+1);
+httpsServer.listen(PORT, () => {
     console.log(`\nOpen browser-based receiver client hosted at https://${ip}/receiver`);
     console.log(`or use TouchDesigner-based receiver at TD/RTC_in.toe`);
     console.log(`or use Max-based receiver at Max/RTC_in.maxpat.`);

@@ -4,11 +4,11 @@ const mediaConstraints = {
         height: { ideal: 2160 },
         facingMode: "user" // "user" for front-facing camera or "environment" for rear camera
     }, 
-    // audio: { //uncomment to enable microphone stream. Watch out for feedback!!!
-    //     echoCancellation: false,
-    //     noiseSuppression: false,
-    //     autoGainControl: false
-    // } 
+    audio: { //uncomment to enable microphone stream. Watch out for feedback!!!
+        echoCancellation: false,
+        noiseSuppression: false,
+        autoGainControl: false
+    } 
     //Audio stream may cause autoplay issues when received on a mobile browser.
     //experiment with setting these to true to potentially improve audio quality + prevent feedback
 }
@@ -24,7 +24,7 @@ async function startStreams(e) {
     try {
         //uncomment streams as needed
         await startTouchStream();
-        // await startOrientationStream();
+        await startOrientationStream();
         // await startMotionStream();
         await startMediaStream(mediaConstraints);
         await startHandposeStream([0,4,8,12,16,20]); //pass handpose an array of keypoint numbers for the hand keypoints to send (see https://docs.ml5js.org/assets/handpose-keypoints-map.png)
@@ -43,7 +43,7 @@ let stream;
 
 async function startMediaStream(mediaConstraints) {
     stream = await navigator.mediaDevices.getUserMedia(mediaConstraints);
-    stream.getTracks().forEach(t => peer.addTrack(t, stream));
+    stream.getTracks().forEach(t => {console.log(t), peer.addTrack(t, stream)});
 }
 
 async function startHandposeStream(usedkeypoints=[0,4,8,12,16,20]) {
