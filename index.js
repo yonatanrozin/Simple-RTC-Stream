@@ -37,7 +37,7 @@ app.use(express.static("./clients"));
 const httpsServer = https.createServer({ cert: cert.cert, key: cert.key }, app);
 const httpServer = http.createServer(app);
 
-const OSC = new Client("192.168.1.130", 10000); //use ip address 127.0.0.1 to send to software on this same device
+const OSC = new Client("127.0.0.1", 10000); //use ip address 127.0.0.1 to send to software on this same device
 
 function getOscAddresses(obj, prefix="") {
     const result = [];
@@ -76,17 +76,17 @@ io.on("connection", (ws) => {
     });
     ws.on("data", (data) => {
         const oscValues = getOscAddresses(data);
-        // console.log(data);
+        console.log(data);
         OSC.send(new Bundle(...oscValues));
     });
 });
 
 httpServer.listen(PORT+1);
 httpsServer.listen(PORT, () => {
-    console.log(`\nOpen browser-based receiver client hosted at https://${ip}/receiver`);
+    console.log(`\nOpen browser-based receiver client hosted at https://${ip}:${PORT}/receiver`);
     console.log(`or use TouchDesigner-based receiver at TD/RTC_in.toe`);
     console.log(`or use Max-based receiver at Max/RTC_in.maxpat.`);
-    console.log(`\nTHEN, open sender client hosted at https://${ip}/sender.`);
+    console.log(`\nTHEN, open sender client hosted at https://${ip}:${PORT}/sender.`);
     console.log(`\n***Be sure to include 'https' in any URLs, NOT http!!!***`);
     console.log(`If either sender or receiver device is hosting this server, use ip address 127.0.0.1 in the URL instead.`);
     console.log("It's safe to ignore any browser security warnings.");

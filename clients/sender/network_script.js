@@ -24,10 +24,10 @@ async function startStreams(e) {
     try {
         //uncomment streams as needed
         await startTouchStream();
-        await startOrientationStream();
+        // await startOrientationStream();
         // await startMotionStream();
-        await startMediaStream(mediaConstraints);
-        await startHandposeStream([0,4,8,12,16,20]); //pass handpose an array of keypoint numbers for the hand keypoints to send (see https://docs.ml5js.org/assets/handpose-keypoints-map.png)
+        // await startMediaStream(mediaConstraints);
+        // await startHandposeStream([0,4,8,12,16,20]); //pass handpose an array of keypoint numbers for the hand keypoints to send (see https://docs.ml5js.org/assets/handpose-keypoints-map.png)
         // await startGPS();
 
         await onStreamsStarted(); //don't remove
@@ -179,7 +179,7 @@ const peerConfiguration = {
 // peerConfiguration.iceServers = []; //Uncomment this line on local networks with no internet access
 const peer = new RTCPeerConnection(peerConfiguration);
 
-const channel = peer.createDataChannel("data");
+// const channel = peer.createDataChannel("data");
 
 peer.addEventListener("connectionstatechange", () => console.log(peer.connectionState));
 peer.addEventListener("icecandidate", ({ candidate }) => {
@@ -215,7 +215,7 @@ async function onStreamsStarted() {
     await wakeLock(); 
     document.querySelector("#button-overlay")?.remove();
     await RTCConnect();
-    setInterval(() => channel.send(JSON.stringify(data)), 100/30); 
+    // setInterval(() => channel.send(JSON.stringify(data)), 100/30); 
     setInterval(() => {
         socket.emit("data", data);
     }, 1000/dataFrequency);
