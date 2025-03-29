@@ -3,16 +3,7 @@ const isMax = new URLSearchParams(window.location.search).has("max");
 
 if (isTD) document.title = "{}";
 
-let peerConfiguration = {
-    iceServers: [ 
-        {
-            urls: [
-                'stun:stun.l.google.com:19302',
-                'stun:stun1.l.google.com:19302'
-            ]
-        }
-    ]
-}
+let peerConfiguration = { iceServers: [ { urls: ['stun:stun.l.google.com:19302', 'stun:stun1.l.google.com:19302'] } ] };
 
 // uncomment this line on local networks with no internet access. It may result in lower quality streaming!
 // peerConfiguration.iceServers = [];
@@ -43,7 +34,7 @@ socket.on("offer", async (offer) => {
     const answer = await peer.createAnswer();
     await peer.setLocalDescription(answer);
     console.log("Sending answer.");
-    socket.emit("answer", answer)
+    socket.emit("answer", answer);
 });
 
 const RTCData = {};
@@ -64,6 +55,7 @@ peer.ondatachannel = ({ channel }) => {
 function onChannelDataReceived({data}) {
     try {
         Object.assign(RTCData, JSON.parse(data));
+        console.log(RTCData);
         if (isTD) document.title = JSON.stringify(RTCData);
         else if (isMax) {
             window.max.setDict("RTCData", RTCData);

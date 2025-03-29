@@ -1,6 +1,8 @@
 # Simple-RTC-Stream
 A bare-minimum example of streaming data between 2 devices over WebRTC. This example is geared towards using a mobile device as a hand-held controller or embedded sensor, but it can be adapted for many other uses.
 
+__README IS OUTDATED, UPDATE COMING SOON__
+
 ## About
 
 This repo provides a relatively simple bare-minimum setup for streaming a video, audio and text channel between 2 devices over WebRTC. WebRTC is currently the only UDP-based protocol accessible from a web browser, making this the fastest option for multimedia streaming available on a mobile device without custom app development.

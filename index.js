@@ -4,57 +4,82 @@ import https from "https";
 import http from "http";
 import { createCA, createCert } from "mkcert";
 import os from "os";
+import { Client, Bundle } from "node-osc";
 
-var ip = os.networkInterfaces()['Wi-Fi'].find(i => i.family === "IPv4").address;
+const ip = os.networkInterfaces()['Wi-Fi'].find(i => i.family === "IPv4").address;
 
 const ca = await createCA({
-  organization: "Yonatan Rozin", //feel free to change this, but it doesn't affect anything
-  countryCode: "US",
-  state: "New York",
-  locality: "New York",
-  validity: 365 //certificate valid for 365 days (but gets re-created whenever this file is executed)
+    organization: "Your name here", //feel free to change these settings, but they don't affect anything
+    countryCode: "US",
+    state: "New York",
+    locality: "New York",
+    validity: 365 //certificate valid for 365 days (but gets re-created whenever this file is executed)
 });
 
 const cert = await createCert({
-  ca: { key: ca.key, cert: ca.cert },
-  domains: ["127.0.0.1", "localhost"],
-  validity: 365 
+    ca: { key: ca.key, cert: ca.cert },
+    domains: ["127.0.0.1", "localhost"],
+    validity: 365
 });
 
 const app = express();
 
-app.use("/sender", express.static("sender"));
-app.use("/receiver", express.static("receiver"));
+app.use(express.static("./clients"));
 
-const httpsServer = https.createServer({cert: cert.cert, key: cert.key}, app);
+const httpsServer = https.createServer({ cert: cert.cert, key: cert.key }, app);
 const httpServer = http.createServer(app);
 
+const OSC = new Client("localhost", 10000);
+
+function getOscAddresses(obj, prefix="") {
+    const result = [];
+    for (const key in obj) {
+      const value = obj[key];
+      const currentAddress = `${prefix}/${key}`;
+      if (typeof value === "object" && value !== null) {
+        result.push(...getOscAddresses(value, currentAddress));
+      } else {
+        result.push([currentAddress, value]);
+      }
+    }
+    return result;
+}
+
 const io = new Server({
-  cors: {
-    origin: ["http://localhost*", "https://localhost*"],
-    methods: ["GET", "POST"],
-    credentials: true
-  }
+    cors: {
+        origin: ["http://localhost*", "https://localhost*"],
+        methods: ["GET", "POST"],
+        credentials: true
+    }
 });
 
 io.attach(httpServer);
 io.attach(httpsServer);
 
 io.on("connection", (ws) => {
-  ws.on("offer", offer => {
-      ws.broadcast.emit("offer", offer);
-  });
-  ws.on("answer", answer => {
-      ws.broadcast.emit("answer", answer);
-  });
-  ws.on('iceCandidate', ice => {
-      ws.broadcast.emit("iceCandidate", ice);
-  });
+    ws.on("offer", offer => {
+        ws.broadcast.emit("offer", offer);
+    });
+    ws.on("answer", answer => {
+        ws.broadcast.emit("answer", answer);
+    });
+    ws.on('iceCandidate', ice => {
+        ws.broadcast.emit("iceCandidate", ice);
+    });
+    ws.on("data", (data) => {
+        const oscValues = getOscAddresses(data);
+        // console.log(data);
+        OSC.send(new Bundle(...oscValues));
+    });
 });
 
 httpServer.listen(80);
-httpsServer.listen(443, () => console.log(
-  `Open browser-based receiver client hosted at https://${ip}/receiver,
-  THEN open sender client hosted at https://${ip}/sender.
-  If either sender or receiver device is hosting this server, use ip address 127.0.0.1 in the URL instead.`
-));
+httpsServer.listen(443, () => {
+    console.log(`\nOpen browser-based receiver client hosted at https://${ip}/receiver`);
+    console.log(`or use TouchDesigner-based receiver at TD/RTC_in.toe`);
+    console.log(`or use Max-based receiver at Max/RTC_in.maxpat.`);
+    console.log(`\nTHEN, open sender client hosted at https://${ip}/sender.`);
+    console.log(`\n***Be sure to include 'https' in any URLs, NOT http!!!***`);
+    console.log(`If either sender or receiver device is hosting this server, use ip address 127.0.0.1 in the URL instead.`);
+    console.log("It's safe to ignore any browser security warnings.");
+});

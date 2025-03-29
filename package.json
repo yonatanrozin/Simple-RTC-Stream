@@ -12,6 +12,9 @@
     "express": "^4.21.2",
     "https": "^1.0.0",
     "mkcert": "^3.2.0",
+    "node-osc": "^9.1.4",
+    "node-red": "^4.0.9",
+    "node-red-contrib-osc": "^1.1.0",
     "socket.io": "^4.8.1"
   },
   "type": "module"
