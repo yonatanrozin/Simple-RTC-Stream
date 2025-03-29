@@ -14,7 +14,9 @@ if (!PORT) {
     exit();
 }
 
-const ip = os.networkInterfaces()['Wi-Fi'].find(i => i.family === "IPv4").address;
+// const ip = os.networkInterfaces()['Wi-Fi'].find(i => i.family === "IPv4").address;
+
+const ip = "<IP ADDRESS>";
 
 const ca = await createCA({
     organization: "Your name here", //feel free to change these settings, but they don't affect anything

@@ -26,7 +26,7 @@ async function startStreams(e) {
         await startTouchStream();
         // await startOrientationStream();
         // await startMotionStream();
-        // await startMediaStream(mediaConstraints);
+        await startMediaStream(mediaConstraints);
         // await startHandposeStream([0,4,8,12,16,20]); //pass handpose an array of keypoint numbers for the hand keypoints to send (see https://docs.ml5js.org/assets/handpose-keypoints-map.png)
         // await startGPS();
 
